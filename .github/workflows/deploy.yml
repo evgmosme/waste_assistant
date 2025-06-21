@@ -13,23 +13,24 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@v4
 
-    # NEW → proper auth step
+    # Authenticate to Google Cloud with the JSON key in the secret
     - name: Authenticate to Google Cloud
       id: auth
       uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    # Setup gcloud after auth
+    # Install the gcloud CLI and set the project
     - name: Set up gcloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-    # Build Docker image via Cloud Build
+    # Build the Docker image with Cloud Build, using a custom staging bucket
     - name: Build container image
       run: |
         gcloud builds submit \
+          --gcs-source-staging-dir=gs://gpt-models-436109-github-source/source \
           --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/wasteassistant:${{ github.sha }}
 
     # Deploy the new revision to Cloud Run
