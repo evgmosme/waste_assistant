@@ -1,121 +1,119 @@
-# Waste Assistant Chatbot for Jyväskylä
+# Waste Assistant Chatbot for Jyväskylä ♻️
 
-This project is a chatbot designed to assist new residents and immigrants in Jyväskylä, Finland, with waste sorting. Finland's waste sorting system can be challenging for newcomers, especially in a city like Jyväskylä with its specific local regulations. This chatbot provides an easy way to get answers about waste sorting and can even analyze photos of waste items to suggest the correct disposal method.
+**Waste Assistant** is a friendly Flask + OpenAI bot that helps newcomers—and anyone else—figure out where every item belongs in the city’s recycling system.
 
-## Features
+> "Where should this go in Jyväskylä?"
+> Ask in English or Finnish, or snap a photo—the bot knows the answer.
 
-- Answers questions about waste sorting specific to Jyväskylä.
-- Analyzes uploaded images of waste items to recommend proper disposal.
-- Supports both **English** and **Finnish** languages.
-- Powered by OpenAI's GPT-4o-mini for natural language processing and image analysis.
-- Deployed on **Google Cloud Run** for scalability and accessibility.
+---
 
-## Technologies Used
+## ✨ Features
 
-- **Python**: Core programming language.
-- **Flask**: Web framework for the chatbot interface.
-- **OpenAI API**: Enables natural language understanding and image processing.
-- **Google Cloud Run**: Hosts the application in a serverless environment.
-- **Google Cloud Build**: Automates building the Docker image.
-- **GitHub Actions**: Handles continuous deployment.
-- **Docker**: Containerizes the application for consistency.
+* **Local expertise** Tailored to Jyväskylä’s official sorting rules.
+* **Text *or* photo** Type a question *or* upload an image of the item.
+* **Bilingual UI** Instantly switch between **English** and **Finnish**.
+* **Smart image compression** 500 × 500 JPEG (quality 75) before sending to OpenAI → fewer tokens & lower cost.
+* **GPT-4o-mini vision + chat** One model for language *and* image reasoning.
+* **Serverless host** Runs on Google Cloud Run; scales to zero when idle.
 
-## Setup and Installation
+---
 
-To run the project locally, follow these steps:
+## 🔧 Tech stack
 
-1. **Clone the repository**:
+| Layer         | Tool / Service                 |
+| ------------- | ------------------------------ |
+| Language      | Python 3.10                    |
+| Web framework | Flask                          |
+| AI / Vision   | OpenAI API (gpt-4o-mini)       |
+| Container     | Docker                         |
+| CI / CD       | GitHub Actions  →  Cloud Build |
+| Runtime       | Google Cloud Run               |
 
-   ```bash
-   git clone https://github.com/your-username/waste-assistant.git
-   ```
+---
 
-2. **Navigate to the project directory**:
+## 🚀 Quick start (local)
 
-   ```bash
-   cd waste-assistant
-   ```
+```bash
+# 1 Clone & enter repo
+git clone https://github.com/<your-user>/waste-assistant.git
+cd waste-assistant
 
-3. **Create a virtual environment**:
+# 2 Virtual env
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
 
-   ```bash
-   python -m venv venv
-   ```
+# 3 Install deps
+pip install -r requirements.txt
 
-4. **Activate the virtual environment**:
+# 4 Create .env
+cat > .env <<EOF
+api_key=YOUR_OPENAI_API_KEY
+secret_key=YOUR_FLASK_SECRET_KEY
+EOF
 
-   - On Windows:
+# 5 Run
+python app.py   # → http://localhost:8086
+```
 
-     ```bash
-     venv\Scripts\activate
-     ```
+Open the URL, ask “Where do I throw plastic bags?” or upload a picture, and get an instant answer.
 
-   - On macOS/Linux:
+---
 
-     ```bash
-     source venv/bin/activate
-     ```
+## 🖥️ Usage tips
 
-5. **Install dependencies**:
+* **Ask anything** "Cardboard pizza box?", "Where do batteries go?" …
+  The bot replies with the right bin, plus nuances (e.g. rinse / remove labels).
+* **Photo mode** Drag-and-drop or tap the camera icon on mobile.
+  The compressed image is analysed by GPT-4o-mini vision.
+* **Language toggle** Switch EN ↔ FI in the header; the bot answers accordingly.
+* **Session memory** Context survives for 30 minutes so follow-ups are fluid.
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+---
 
-6. **Set up environment variables**:
+## 🗂️ Code overview
 
-   - Create a `.env` file in the project root.
-   - Add the following (replace with your own keys):
+* **`app.py`** Flask routes (`/`, `/ask`, `/reset`) + OpenAI calls.
+* **Prompts** System messages live in `model_instructions/` (EN & FI).
+* **Image pipeline** `compress_image()` resizes & recompresses uploads to save tokens.
+* **Session** Flask-Session stores chat history on disk (`./flask_session`).
 
-     ```
-     api_key=YOUR_OPENAI_API_KEY
-     secret_key=YOUR_FLASK_SECRET_KEY
-     ```
+---
 
-7. **Run the application**:
+## ☁️ Continuous deployment (Cloud Run)
 
-   ```bash
-   python app.py
-   ```
+A single GitHub Actions workflow (`.github/workflows/deploy.yml`) handles CI/CD:
 
-   The chatbot will be available at `http://localhost:8086`.
+1. **Checkout** code.
+2. **Authenticate** with a service-account key (`GCP_SA_KEY`).
+3. `gcloud run deploy --source .` – Buildpacks build & push the image.
+4. Cloud Run rolls out a new revision of the `wasteassistant` service.
 
-## Usage
+> Public URL format: `https://wasteassistant-xxxxx.a.run.app`
 
-- Open a browser and go to `http://localhost:8086`.
-- Use the chat interface to:
-  - Ask questions about waste sorting (e.g., "Where do I throw plastic bags?").
-  - Upload an image of a waste item for analysis.
-- The chatbot will respond with instructions tailored to Jyväskylä's waste sorting rules.
-- Switch between English and Finnish via the interface (defaults to English).
+Required secrets:
 
-## How It Works
+| Secret name      | Purpose / example value                                |
+| ---------------- | ------------------------------------------------------ |
+| GCP\_SA\_KEY     | JSON key (Artifact Registry + Cloud Build + Run roles) |
+| GCP\_PROJECT\_ID | e.g. `gpt-models-436109`                               |
+| GCP\_REGION      | e.g. `europe-north1`                                   |
+| OPENAI\_API\_KEY | `sk-…`                                                 |
+| FLASK\_SECRET    | `openssl rand -hex 32` (any long random string)        |
 
-### Code Overview
+---
 
-- **Flask App**: The `app.py` file sets up a Flask web server with routes for the homepage (`/`), asking questions (`/ask`), and resetting the conversation (`/reset`).
-- **OpenAI Integration**: Uses the `gpt-4o-mini` model to process text queries and analyze images. Instructions specific to Jyväskylä's waste sorting rules are loaded from text files (`gpt_instructions_en.txt`, `gpt_instructions_fi.txt`, etc.).
-- **Image Processing**: Uploaded images are compressed using PIL and converted to base64 for OpenAI's image analysis.
-- **Session Management**: Flask-Session stores conversation history in the filesystem, with a 30-minute timeout.
-- **Language Support**: Dynamically selects English or Finnish instructions based on user preference.
+## 🤝 Contributing
 
-### Deployment
+Pull requests are welcome!
 
-The project is deployed to Google Cloud Run using a GitHub Actions workflow:
+1. Fork → branch → commit with clear messages.
+2. Push and open a PR against `main`.
+3. CI will build & deploy the preview automatically.
 
-- **Workflow**: Defined in `.github/workflows/deploy.yml`.
-- **Trigger**: Runs on every push to the `main` branch or manually via the "Run workflow" button.
-- **Steps**:
-  1. Checks out the repository.
-  2. Authenticates to Google Cloud using a service account key stored in GitHub secrets (`GCP_SA_KEY`).
-  3. Builds a Docker image with Cloud Build and deploys it to the `wasteassistant` service on Cloud Run.
-- **Access**: The deployed app is publicly accessible at `https://wasteassistant-XXXXX.a.run.app` (URL varies by deployment).
+Found a bug or want to suggest a new feature? Open an issue.
 
-## Contributing
+---
 
-Contributions are welcome! To contribute:
+## 📄 License
 
-- Fork the repository.
-- Create a branch for your feature or fix.
-- Commit your changes with clear messages.
-- Push to your fork and submit a pull request to the `main` branch.
+Apache-2.0.  See `LICENSE` for full text
