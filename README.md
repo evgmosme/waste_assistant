@@ -77,7 +77,7 @@ Open the URL, ask “Where do I throw plastic bags?” or upload a picture, and 
 
 ## 🗂️ Code overview
 
-* **`app.py`** Flask routes (`/`, `/ask`, `/reset`) + OpenAI calls.
+* **`main.py`** Flask routes (`/`, `/ask`, `/reset`) + OpenAI calls.
 * **Prompts** System messages live in `model_instructions/` (EN & FI).
 * **Image pipeline** `compress_image()` resizes & recompresses uploads to save tokens.
 * **Session** Flask-Session stores chat history on disk (`./flask_session`).
