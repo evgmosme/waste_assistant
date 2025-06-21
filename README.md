@@ -70,7 +70,6 @@ Open the URL, ask “Where do I throw plastic bags?” or upload a picture, and 
   The bot replies with the right bin, plus nuances (e.g. rinse / remove labels).
 * **Photo mode** Drag-and-drop or tap the camera icon on mobile.
   The compressed image is analysed by GPT-4o-mini vision.
-* **Language toggle** Switch EN ↔ FI in the header; the bot answers accordingly.
 * **Session memory** Context survives for 30 minutes so follow-ups are fluid.
 
 ---
