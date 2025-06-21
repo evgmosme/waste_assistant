@@ -7,14 +7,14 @@ name: Build & Deploy to Cloud Run
 
 # ─── Triggers ───────────────────────────────────────────────────────────
 on:
-  push:                    # run on every push to main
+  push:                  # run on every push to main
     branches: ["main"]
-  workflow_dispatch:       # allow manual “Run workflow” button
+  workflow_dispatch:     # manual “Run workflow” button
 
 # ─── Single job ────────────────────────────────────────────────────────
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest           # use the hosted GitHub runner
+    runs-on: ubuntu-latest         # use the hosted GitHub runner
 
     steps:
     # 1️⃣ Check out the repository at this commit
@@ -29,13 +29,16 @@ jobs:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
     # 3️⃣ Build the image from the repo root and deploy it
-    #     to Cloud Run (Cloud Build is invoked under the hood).
-    #     --allow-unauthenticated keeps the public URL accessible.
+    #     Cloud Build is invoked under the hood by “source: .”.
+    #     The env_vars section passes runtime secrets to the container.
     - name: Deploy to Cloud Run
       uses: google-github-actions/deploy-cloudrun@v2
       with:
-        service: wasteassistant          # name of the existing service
-        source: .                        # build from the repo root
+        service: wasteassistant          # existing Cloud Run service
+        source: .                        # buildpacks build from repo root
         project_id: ${{ secrets.GCP_PROJECT_ID }}
         region: ${{ secrets.GCP_REGION }}
-        flags: --allow-unauthenticated   # make the revision public
+        env_vars: |
+          api_key=${{ secrets.OPENAI_API_KEY }}
+          secret_key=${{ secrets.FLASK_SECRET }}
+        flags: --allow-unauthenticated   # keep the public URL accessible
