@@ -2,8 +2,8 @@ name: Build & Deploy to Cloud Run
 
 on:
   push:
-    branches: ["main"]          # deploy on every push to main
-  workflow_dispatch:            # manual trigger button
+    branches: ["main"]        # deploy on every push to main
+  workflow_dispatch:          # manual “Run workflow” button
 
 jobs:
   build-and-deploy:
@@ -13,32 +13,18 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@v4
 
-    # Authenticate to Google Cloud with the JSON key in the secret
+    # Authenticate with the JSON key stored in the secret
     - name: Authenticate to Google Cloud
-      id: auth
       uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    # Install the gcloud CLI and set the project
-    - name: Set up gcloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-
-    # Build the Docker image with Cloud Build, using a custom staging bucket
-    - name: Build container image
-      run: |
-        gcloud builds submit \
-          --gcs-source-staging-dir=gs://gpt-models-436109-github-source/source \
-          --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/wasteassistant:${{ github.sha }} \
-          --no-stream
-
-    # Deploy the new revision to Cloud Run
+    # Build *and* deploy straight from the source directory
     - name: Deploy to Cloud Run
       uses: google-github-actions/deploy-cloudrun@v2
       with:
         service: wasteassistant
-        image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/wasteassistant:${{ github.sha }}
+        source: .                               # <-- build from current repo
         region: ${{ secrets.GCP_REGION }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
         allow_unauthenticated: true
