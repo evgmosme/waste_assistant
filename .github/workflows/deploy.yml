@@ -32,6 +32,7 @@ jobs:
         gcloud builds submit \
           --gcs-source-staging-dir=gs://gpt-models-436109-github-source/source \
           --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/wasteassistant:${{ github.sha }}
+          --no-stream
 
     # Deploy the new revision to Cloud Run
     - name: Deploy to Cloud Run
