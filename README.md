@@ -5,7 +5,7 @@
 > "Where should this go in Jyväskylä?"
 > Ask in English or Finnish, or snap a photo—the bot knows the answer.
 
-![Chatbot demo](docs/demo.png)
+![Chatbot demo](docs/demo_thumb.png)
 
 ---
 
