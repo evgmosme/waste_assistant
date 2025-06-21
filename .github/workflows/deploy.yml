@@ -1,44 +1,49 @@
-# GitHub Actions workflow:
-# Builds the repo’s Docker image with Cloud Build
-# and deploys it as a new revision of the existing
-# Cloud Run service “wasteassistant”.
+# GitHub Actions workflow
+# ──────────────────────────────────────────────────────────────────────────
+#  • Builds the application with Cloud Build (Buildpacks, from source).
+#  • Deploys the resulting container as a new revision of the existing
+#    Cloud Run service “wasteassistant”.
+#  • Passes runtime secrets (OpenAI key + Flask secret) via env-vars.
+#  • Triggers on every push to main and via the manual “Run workflow” button.
+# ──────────────────────────────────────────────────────────────────────────
 
 name: Build & Deploy to Cloud Run
 
-# ─── Triggers ───────────────────────────────────────────────────────────
+# ─── Triggers ────────────────────────────────────────────────────────────
 on:
-  push:                  # run on every push to main
+  push:                    # automatic deploy on each push to main
     branches: ["main"]
-  workflow_dispatch:     # manual “Run workflow” button
+  workflow_dispatch:       # enable manual runs from the UI
 
-# ─── Single job ────────────────────────────────────────────────────────
+# ─── Job definition ──────────────────────────────────────────────────────
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest         # use the hosted GitHub runner
+    runs-on: ubuntu-latest            # GitHub-hosted runner
 
     steps:
-    # 1️⃣ Check out the repository at this commit
+    # 1️⃣ Check out repository contents at the current commit
     - name: Checkout source
       uses: actions/checkout@v4
 
-    # 2️⃣ Authenticate the runner to GCP using the service-account key
-    #     stored in the repository secret GCP_SA_KEY.
+    # 2️⃣ Authenticate to Google Cloud using a service-account key
+    #     stored in the secret GCP_SA_KEY (JSON key with the required roles).
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    # 3️⃣ Build the image from the repo root and deploy it
-    #     Cloud Build is invoked under the hood by “source: .”.
-    #     The env_vars section passes runtime secrets to the container.
+    # 3️⃣ Build from source and deploy in a single command.
+    #     The Buildpacks flow (source: .) invokes Cloud Build automatically,
+    #     stores the image in Artifact Registry and creates a new revision.
+    #     env_vars injects the runtime secrets into the container.
     - name: Deploy to Cloud Run
       uses: google-github-actions/deploy-cloudrun@v2
       with:
-        service: wasteassistant          # existing Cloud Run service
-        source: .                        # buildpacks build from repo root
+        service: wasteassistant                # existing Cloud Run service
+        source: .                              # buildpacks build from repo root
         project_id: ${{ secrets.GCP_PROJECT_ID }}
-        region: ${{ secrets.GCP_REGION }}
-        env_vars: |
+        region:     ${{ secrets.GCP_REGION }}
+        env_vars: |                            # runtime secrets
           api_key=${{ secrets.OPENAI_API_KEY }}
           secret_key=${{ secrets.FLASK_SECRET }}
-        flags: --allow-unauthenticated   # keep the public URL accessible
+        flags: --allow-unauthenticated         # keep the public URL open
