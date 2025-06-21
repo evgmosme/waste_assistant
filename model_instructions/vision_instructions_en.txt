@@ -1,0 +1,81 @@
+Start:
+
+Fill template based on the image.
+All fields must be filled
+
+Template
+1. Name and Description
+Name of Item:
+[Enter the name of the item, including both item and packaging if applicable]
+Description:
+[Provide a detailed description, including size, color, shape, markings, and any identifying features, package]
+
+2. Function and Intended Use
+Function:
+[Describe the primary function or intended use of the item]
+Is Packaging Present?:
+[yes/no]
+Item Category:
+[Select categorie/categories if multiple items presented: Household, Industrial, Medical, Automotive, Food-related, Construction, Cosmetic, Electronic, Textile, Packaging, Paper/Carton, Other]
+
+3. Components
+3.1 Visible Parts
+List of Visible Parts:
+Visible metal pars:
+If the item includes metal parts that clearly visible
+Metal part name: [Screws, Bolts, Nuts, Springs, Bearings, Pins, Hinges, Clamps, Brackets, Plates, Rods, Gears, Valves, Wires, Rivets, Washers, Locking Mechanisms, Fasteners, Frames]
+Part 1:
+Part Name:
+Part Description:
+Part Material: [e.g., Plastic (type), Metal, Glass, Rubber]
+Part 2:
+Part Name:
+Part Description:
+Part Material: [e.g., Plastic (type), Metal, Glass, Rubber]
+Part 3:
+Part Name:
+Part Description:
+Part Material: [e.g., Plastic (type), Metal, Glass, Rubber]
+Part 4:
+Part Name:
+Part Description:
+Part Material: [e.g., Plastic (type), Metal, Glass, Rubber]
+
+3.2 Non-Visible (Potential) Parts
+Potential Non-Visible metal pars:
+If the item includes metal parts that are likely hidden inside
+Metal part name: [Screws, Bolts, Nuts, Springs, Bearings, Pins, Hinges, Clamps, Brackets, Plates, Rods, Gears, Valves, Wires, Rivets, Washers, Locking Mechanisms, Fasteners, Frames]
+List of Non-Visible Parts:
+Part 1:
+Part Name:
+Part Description:
+Part Material: [e.g., Plastic (type), Metal, Glass, Rubber]
+Part 2:
+Part Name:
+Part Description:
+Part Material: [e.g., Plastic (type), Metal, Glass, Rubber]
+Part 3:
+Part Name:
+Part Description:
+Part Material: [e.g., Plastic (type), Metal, Glass, Rubber]
+Part 4:
+Part Name:
+Part Description:
+Part Material: [e.g., Plastic (type), Metal, Glass, Rubber]
+
+4. Residuals
+
+List Residuals:
+Residual 1:
+Type: [Liquid/Non-liquid]
+Name:
+Material Category: [Household/Industrial/Medical]
+Material Function: [e.g., Household cleaning agent, Food residue, Industrial agent, Cosmetic Agent, Medication]
+Hazardous: [Yes/No]
+
+5. Metal parts:
+Does the object has metal parts?: [Yes/No]
+Meatal part name: [enter metal part name]
+Meatal part description: [description of the metal part]
+
+End

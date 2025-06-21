@@ -1,0 +1,7 @@
+openai>=1.0.0
+Flask
+gunicorn
+python-dotenv
+Flask-Session
+pillow
+tiktoken
