@@ -1,29 +1,41 @@
+# GitHub Actions workflow:
+# Builds the repo’s Docker image with Cloud Build
+# and deploys it as a new revision of the existing
+# Cloud Run service “wasteassistant”.
+
 name: Build & Deploy to Cloud Run
 
+# ─── Triggers ───────────────────────────────────────────────────────────
 on:
-  push:
+  push:                    # run on every push to main
     branches: ["main"]
-  workflow_dispatch:
+  workflow_dispatch:       # allow manual “Run workflow” button
 
+# ─── Single job ────────────────────────────────────────────────────────
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest           # use the hosted GitHub runner
 
     steps:
+    # 1️⃣ Check out the repository at this commit
     - name: Checkout source
       uses: actions/checkout@v4
 
+    # 2️⃣ Authenticate the runner to GCP using the service-account key
+    #     stored in the repository secret GCP_SA_KEY.
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    # Build from source and deploy in one step
+    # 3️⃣ Build the image from the repo root and deploy it
+    #     to Cloud Run (Cloud Build is invoked under the hood).
+    #     --allow-unauthenticated keeps the public URL accessible.
     - name: Deploy to Cloud Run
       uses: google-github-actions/deploy-cloudrun@v2
       with:
-        service: wasteassistant                     # existing Cloud Run service
-        source: .                                  # build Docker image from repo root
+        service: wasteassistant          # name of the existing service
+        source: .                        # build from the repo root
         project_id: ${{ secrets.GCP_PROJECT_ID }}
         region: ${{ secrets.GCP_REGION }}
-        flags: --allow-unauthenticated             # keep the service public
+        flags: --allow-unauthenticated   # make the revision public
