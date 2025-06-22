@@ -6,99 +6,90 @@
     <title>Waste Management Assistant</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-    /* ──────────────────── CSS variables: light by default ─────────────────── */
+    /* ─────────────────────── CSS variables ─────────────────────── */
+
     :root {
-        /* neutrals */
+        /* neutrals (light mode) */
         --bg-body:        #f5f5f5;
         --bg-card:        #ffffff;
         --bg-chat:        #e0e0e0;
         --bg-user:        #aae3c2;
         --bg-assistant:   #F6F6F9;
+        --bg-input:       #ffffff;
         --border:         #dddddd;
         --scroll-track:   #f1f1f1;
         --scroll-thumb:   #cccccc;
 
-        /* accent */
+        /* text / accent */
+        --text-default:   #202124;
+        --text-inverse:   #ffffff;
         --accent-pink:    #EE125B;
     }
 
-    /* ──────────────────── automatic dark-mode palette ─────────────────────── */
+    /* ─────────────── automatic dark-mode palette ─────────────── */
     @media (prefers-color-scheme: dark) {
         :root {
-            --bg-body:        #18191b;
-            --bg-card:        #202124;
-            --bg-chat:        #26272a;
-            --bg-user:        #2d4b3a;
-            --bg-assistant:   #323438;
-            --border:         #3b3c3f;
-            --scroll-track:   #1e1f21;
-            --scroll-thumb:   #575a5d;
-            --accent-pink:    #ff2e7a;
+            --bg-body:      #18191b;
+            --bg-card:      #202124;
+            --bg-chat:      #26272a;
+            --bg-user:      #2d4b3a;
+            --bg-assistant: #323438;
+            --bg-input:     #2b2c2f;
+            --border:       #3b3c3f;
+            --scroll-track: #1e1f21;
+            --scroll-thumb: #575a5d;
+
+            --text-default: #e8e8e8;
+            --text-inverse: #e8e8e8;
+            --accent-pink:  #ff2e7a;
         }
     }
 
-    /* ─────────────── base / mobile styles ─────────────── */
+    /* ───────────────── base / mobile styles ───────────────── */
 
-    html, body {
-        height: 100%;
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: var(--bg-body);
-        overflow: hidden;
+    html,body{
+        height:100%;margin:0;
+        font-family:Arial,sans-serif;color:var(--text-default);
+        background:var(--bg-body);overflow:hidden;
     }
 
     .container{
-        display:flex;
-        flex-direction:column;
-        height:100vh;
-        width:100%;
-        max-width:100vw;
-        margin:0;
-        box-sizing:border-box;
-        background:var(--bg-card);
-        border-radius:10px;
+        display:flex;flex-direction:column;height:100vh;width:100%;
+        max-width:100vw;margin:0;box-sizing:border-box;
+        background:var(--bg-card);border-radius:10px;
     }
 
     .chat-container{
-        flex-grow:1;
-        overflow-y:auto;
-        background:var(--bg-chat);
-        padding:10px;
-        box-sizing:border-box;
-        margin-bottom:70px;/* reserve space for input bar */
+        flex-grow:1;overflow-y:auto;background:var(--bg-chat);
+        padding:10px;box-sizing:border-box;margin-bottom:70px;
     }
 
     .message{
-        margin-bottom:10px;
-        padding:10px 15px;
-        border-radius:10px;
-        word-wrap:break-word;
-        max-width:80%;
-        box-sizing:border-box;
-        box-shadow:0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom:10px;padding:10px 15px;border-radius:10px;
+        word-wrap:break-word;max-width:80%;box-sizing:border-box;
+        box-shadow:0 1px 3px rgba(0,0,0,.1);color:var(--text-default);
     }
-
     .user-message     {background:var(--bg-user);      align-self:flex-end;margin-left:auto;}
     .assistant-message{background:var(--bg-assistant); align-self:flex-start;margin-right:auto;}
 
     .user-image{
-        align-self:flex-end;margin-left:auto;
-        max-width:200px;border:1px solid var(--border);
-        border-radius:10px;display:block;margin-top:10px;margin-bottom:10px;
-        background:transparent;box-shadow:none;padding:0;
+        align-self:flex-end;margin-left:auto;max-width:200px;
+        border:1px solid var(--border);border-radius:10px;display:block;
+        margin:10px 0;background:transparent;box-shadow:none;
     }
 
     .input-container{
         display:flex;align-items:flex-end;padding:10px;
-        background:var(--bg-body);border-top:1px solid var(--border);
+        background:var(--bg-input);border-top:1px solid var(--border);
         box-sizing:border-box;position:sticky;bottom:0;left:0;right:0;width:100%;
     }
 
     .textarea-container{flex-grow:1;margin-left:10px;display:flex;flex-direction:column;}
 
     textarea{
-        width:100%;padding:10px 10px;font-size:16px;line-height:17px;
-        border-radius:15px;border:1px solid var(--border);background:#fff;
+        width:100%;padding:10px;font-size:16px;line-height:17px;
+        border-radius:15px;border:1px solid var(--border);
+        background:var(--bg-card);color:var(--text-default);
         resize:none;height:40px;max-height:150px;overflow-y:auto;box-sizing:border-box;
     }
 
@@ -111,9 +102,9 @@
     .icon-button i,button#sendButton i{font-size:30px;color:var(--accent-pink);}
     button#sendButton:disabled{cursor:not-allowed;}
 
-    .chat-container::-webkit-scrollbar{width:8px;}
-    .chat-container::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:5px;}
-    .chat-container::-webkit-scrollbar-track{background:var(--scroll-track);}
+    .chat-container::-webkit-scrollbar        {width:8px;}
+    .chat-container::-webkit-scrollbar-thumb  {background:var(--scroll-thumb);border-radius:5px;}
+    .chat-container::-webkit-scrollbar-track  {background:var(--scroll-track);}
 
     .image-thumbnail{
         position:relative;width:50px;height:50px;border-radius:5px;overflow:visible;
@@ -132,15 +123,15 @@
             max-width:900px;margin:0 auto;border:1px solid var(--border);
         }
         .chat-container{
-            margin:20px;margin-bottom:90px;border-radius:12px;
-            background:var(--bg-chat);box-shadow:0 2px 6px rgba(0,0,0,.06);
+            margin:20px;margin-bottom:90px;border-radius:12px;background:var(--bg-chat);
+            box-shadow:0 2px 6px rgba(0,0,0,.06);
         }
         .message   {max-width:60%;font-size:15px;}
         .user-image{max-width:250px;}
 
         .input-container{
             position:static;width:auto;margin:0 20px 20px;
-            border:1px solid var(--border);border-radius:12px;
+            border:1px solid var(--border);border-radius:12px;background:var(--bg-input);
         }
         textarea{font-size:15px;padding:12px;}
         .icon-button i,#sendButton i{font-size:26px;}
