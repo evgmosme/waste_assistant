@@ -14,11 +14,15 @@
 ## ✨ Features
 
 - **Local expertise** — tailored to Jyväskylä’s official sorting rules.
-- **Text *****or***** photo** — type a question *or* upload an image of the item.
+- **Text _or_ photo** — type a question *or* upload an image of the item.
 - **Bilingual UI** — instantly switch between **English** and **Finnish**.
 - **Smart image compression** — 500 × 500 JPEG (quality 75) → fewer OpenAI tokens & lower cost.
 - **GPT‑4o‑mini vision + chat** — one model for language *and* image reasoning.
 - **Serverless host** — runs on Google Cloud Run; scales to zero when idle.
+- **Responsive template** — single HTML/CSS file adapts fluidly from mobile to desktop.
+- **Automatic dark / light mode** — respects the user’s OS theme via `prefers‑color‑scheme`.
+- **Accessible UI controls** — keyboard‑friendly, logical focus order, proper contrast.
+- **Drag‑and‑drop & camera capture** — quick image selection on desktop and mobile.
 
 ---
 
@@ -72,6 +76,17 @@ Open the URL, ask “Where do I throw plastic bags?” or upload a picture, and 
 - **Session memory** — context survives for 30 minutes so follow‑ups are fluid.
 
 ---
+
+## 🖼️ Front‑end template highlights
+
+| Feature | Details |
+| ------- | ------- |
+| **Single‑page HTML** | No build step; pure HTML + Vanilla JS. |
+| **CSS Custom Properties** | Central palette makes theming easy. |
+| **Mobile‑first layout** | Flexible flexbox chat column with sticky input bar. |
+| **Styled scrollbars** | Subtle track / thumb colours match theme. |
+| **Markdown rendering** | Uses `marked.js` for rich responses. |
+| **Image preview & remove** | Thumbnail with one‑click _×_ delete before upload. |
 
 ## 🗂️ Code overview
 
