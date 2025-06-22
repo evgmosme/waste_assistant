@@ -172,39 +172,37 @@
     }
 
     /* ─────────────── desktop-only tweaks (≥ 768 px) ─────────────── */
-    @media (min-width: 768px) {
-        /* centre the app and keep it narrower */
-        .container {
-            max-width: 900px;          /* adjust to taste */
-            margin: 0 auto;
-            border: 1px solid #ddd;
-        }
-
-        /* softer background + shadow for the chat panel */
-        .chat-container {
-            margin: 20px;
-            margin-bottom: 90px;       /* space for input bar */
-            border-radius: 12px;
-            background-color: #f0f0f0;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-
-        /* messages don’t stretch full width on large screens */
-        .message        { max-width: 60%; font-size: 15px; }
-        .user-image     { max-width: 250px; }
-
-        /* input bar lifted and centred */
-        .input-container {
-            margin: 0 20px 20px;
-            border-radius: 12px;
-            border: 1px solid #ddd;
-        }
-
-        /* comfortable textarea / icon sizing */
-        textarea                 { font-size: 15px; padding: 12px 12px; }
-        .icon-button i,
-        button#sendButton i      { font-size: 26px; }
+    @media (min-width:768px){
+    /* centre the whole card */
+    .container{
+        max-width:900px;
+        margin:0 auto;
+        border:1px solid #ddd;
     }
+    /* nicer chat panel */
+    .chat-container{
+        margin:20px;
+        margin-bottom:90px;       /* space for toolbar */
+        border-radius:12px;
+        background:#f0f0f0;
+        box-shadow:0 2px 6px rgba(0,0,0,.06);
+    }
+    .message    {max-width:60%;font-size:15px;}
+    .user-image {max-width:250px;}
+
+    /* keep toolbar inside the container */
+    .input-container{
+        position:static;          /* drop sticky so it stays in the card */
+        width:auto;
+        margin:0 20px 20px;
+        border:1px solid #ddd;
+        border-radius:12px;
+    }
+
+    textarea           {font-size:15px;padding:12px;}
+    .icon-button i,
+    #sendButton i      {font-size:26px;}
+}
     </style>
 </head>
 <body>
