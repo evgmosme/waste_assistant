@@ -5,6 +5,10 @@
 > “Where should this go in Jyväskylä?”\
 > Ask in English or Finnish, or snap a photo—the bot knows the answer.
 
+<p align="center">
+  <img src="docs/demo.png" alt="Demo screenshot" width="300">
+</p>
+
 ---
 
 ## ✨ Features
