@@ -2,46 +2,46 @@
 # ------------------------------------------------------------------
 # Build the app from source (Buildpacks) and deploy to Cloud Run.
 # Secrets flow:
-#   • GitHub    : GCP_SA_KEY  (JSON), GCP_PROJECT_ID, GCP_REGION
-#   • SecretMgr : OPENAI_API_KEY , FLASK_SECRET   ← mounted at runtime
+#   • GitHub      : GCP_SA_KEY  (JSON), GCP_PROJECT_ID, GCP_REGION
+#   • SecretMgr   : OPENAI_API_KEY , FLASK_SECRET_KEY  → mounted at runtime
 # ------------------------------------------------------------------
 
 name: Build & Deploy to Cloud Run
 
-# ───────────────────────────── triggers ──────────────────────────────
+# ────────────────────────── triggers ────────────────────────────────
 on:
-  push:                    # every push to main
+  push:                    # auto-deploy on each push to main
     branches: ["main"]
-  workflow_dispatch:       # manual trigger
+  workflow_dispatch:       # manual “Run workflow” button
 
-# ───────────────────────────── job ───────────────────────────────────
+# ────────────────────────── single job ──────────────────────────────
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Checkout repo
+    # 1️⃣ Checkout repository
     - name: Checkout source
       uses: actions/checkout@v4
 
-    # 2️⃣ Authenticate to GCP with the service-account JSON key
+    # 2️⃣ Authenticate to GCP via SA key stored in GitHub Secrets
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    # 3️⃣ Build + deploy; mount secrets from Secret Manager
+    # 3️⃣ Build & deploy; mount Secret Manager values as env-vars
     - name: Deploy to Cloud Run
       uses: google-github-actions/deploy-cloudrun@v2
       with:
-        service: wasteassistant               # pre-created Cloud Run service
-        source:  .                            # Buildpacks build from repo root
+        service:   wasteassistant              # existing Cloud Run service
+        source:    .                           # Buildpacks build from repo root
         project_id: ${{ secrets.GCP_PROJECT_ID }}
         region:     ${{ secrets.GCP_REGION }}
 
-        # ↳ map Secret Manager versions → env-vars at runtime
+        # map Secret Manager → container env-vars (short form)
         secrets: |
-          OPENAI_API_KEY=projects/${{ secrets.GCP_PROJECT_ID }}/secrets/OPENAI_API_KEY:latest
-          FLASK_SECRET=projects/${{ secrets.GCP_PROJECT_ID }}/secrets/FLASK_SECRET:latest
+          OPENAI_API_KEY=OPENAI_API_KEY:latest
+          FLASK_SECRET=FLASK_SECRET_KEY:latest
 
-        flags: --allow-unauthenticated        # keep public endpoint
+        flags: --allow-unauthenticated         # keep the public endpoint
