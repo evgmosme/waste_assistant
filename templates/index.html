@@ -321,31 +321,26 @@ queryInput.addEventListener('input', autoResizeTextarea);
     }
 
     function appendImage(imageSrc, isUser) {
-        const chatDiv    = document.getElementById('chat');
+        const chatDiv = document.getElementById('chat');
 
-        // create a wrapper div so the image bubble keeps the same flex-flow
-        const messageDiv = document.createElement('div');
-        if (isUser) {
-            messageDiv.classList.add('user-message');       // right-align image bubble
-        } else {
-            messageDiv.classList.add('assistant-message');  // left-align for assistant
-        }
+        // wrapper div gets the same alignment class as a text message
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('message');
+        wrapper.classList.add(isUser ? 'user-message' : 'assistant-message');
 
+        // actual <img>
         const img = document.createElement('img');
-        img.src  = imageSrc;
-        img.style.maxWidth     = '200px';
+        img.src = imageSrc;
+        img.style.maxWidth = '200px';
         img.style.borderRadius = '10px';
-        img.style.display      = 'block';
-        img.style.marginTop    = '10px';
+        img.style.display = 'block';
+        img.style.marginTop = '10px';
 
-        if (isUser) {
-            img.classList.add('user-image');  // same styling as text bubbles
-        }
+        wrapper.appendChild(img);
+        chatDiv.appendChild(wrapper);
 
-        img.onload = () => scrollToMessage(messageDiv); // auto-scroll once loaded
-
-        messageDiv.appendChild(img);
-        chatDiv.appendChild(messageDiv);
+        // ensure the latest image scrolls into view
+        scrollToMessage(wrapper);
     }
 
     const translations = {
